@@ -6,25 +6,36 @@ Created on Wed Feb  3 16:29:37 2021
 
 This file contains helper functions that help reformat the data
 """
-
 #specify working directory
 import os
 os.getcwd()
 os.chdir(r'C:\Users\jds05\Desktop\qb_project')
 
 #removes undesirable columns and values from dataframe
-def cleanup (df):
+def cleanup (df, names):
     df =  df.drop(columns = ['Rate', 'QBR', 'Sk', 'Yds.1', 'NY/A', 
                                 'ANY/A', 'Sk%', '4QC', 'Tm', 'Age',
                                 'QBrec', 'Lng', 'Cmp%', 'TD%', 'Int%',
                                 'Y/A', 'Y/C', 'Y/G', 'AY/A'],
                   errors = 'ignore')
-    #give me just the quarterbacks
-    df = df[((df.Pos == 'QB') | (df.Pos == 'qb'))]
+    
+    #if row contains a qb name
+    df = df[(df.index.isin(names))] 
+    
+    #fill nulls wiht 0
     df = df.fillna(value = 0)
     
     return df
 
+#selects all rows that are strictly QBs, does so by removing rows w/o qbrec
+#since all qbs to have started a game have a record... regardless if position
+#name was not listed
+def get_qbs(df):
+    df = df[((df['QBrec'].notnull()) & (df['QBrec'] != u''))] #has a qb record
+    df = df.assign(Pos='QB')
+    qb_names = df.index.tolist()
+    #print(qb_names)
+    return df, qb_names
 
 #cleans the Player naming by removing symbols
 def fix_names(df):
