@@ -14,7 +14,7 @@ are then exported back to CSV files in their final data format.
 import pandas as pd
 import os
 from cleaning import cleanup, fix_names, combine_df, rename_passing, \
-     rename_rushing
+     rename_rushing, get_qbs
 
 #specify working directory
 os.getcwd()
@@ -25,17 +25,18 @@ def reformat_data(year):
     #define file names
     pass_file_name = str(year) + '_passing_stats.csv'
     rush_file_name = str(year) + '_rushing_stats.csv'
-    
+        
     #load in files
     pass_df = pd.read_csv(pass_file_name, index_col = 0)
     rush_df = pd.read_csv(rush_file_name, index_col = 0)
     
     #remove undesirable columns
-    pass_df = cleanup(pass_df)
-    rush_df = cleanup(rush_df)
+    pass_df, qb_names = get_qbs(pass_df)
+    pass_df = cleanup(pass_df, qb_names)
+    rush_df = cleanup(rush_df, qb_names)
     
     #cleanup Player name column
-    pass_df = fix_names(pass_df)
+    pass_df = fix_names(pass_df)    
     rush_df = fix_names(rush_df)
     
     #Rename columns to better identify attributes (i.e. Yds vs Pass_Yds)
@@ -47,19 +48,32 @@ def reformat_data(year):
     pass_stats = pd.concat([pass_df, rush_df.iloc[:,3:]], axis = 1)
     
     #add some calculated columns
+    pass_stats['Yds_Att'] = round((pass_stats['Pass_Yds'] \
+                               / pass_stats['Pass_Att']), 2)
+    pass_stats['Yds_Cmp'] = round((pass_stats['Pass_Yds'] \
+                                / pass_stats['Cmp']), 2 )
     pass_stats['Total_TD'] = (pass_stats['Pass_TD'] + pass_stats['Rush_TD'])
     pass_stats['Total_Yds'] = (pass_stats['Pass_Yds'] + \
                                pass_stats['Rush_Yds'])
     pass_stats['Total_1D'] = (pass_stats['Pass_1D'] + pass_stats['Rush_1D'])
     pass_stats['Total_TOs'] = (pass_stats['Int'] + pass_stats['Fmb'])
     pass_stats['Int_Pct'] = round((pass_stats['Int'] \
-                                   / pass_stats['Pass_Att']), 4)
+                                   / pass_stats['Pass_Att'] * 100), 4)
     pass_stats['Pass_TD_Pct'] = round((pass_stats['Pass_TD'] \
-                                       / pass_stats['Pass_Att']), 4)
+                                       / pass_stats['Pass_Att'] * 100), 4)
     pass_stats['Pass_Yds_Att'] = round((pass_stats['Pass_Yds'] \
                                    / pass_stats['Pass_Att']), 2)
     pass_stats['Pass_Yds_Cmp'] = round((pass_stats['Pass_Yds'] \
                                     / pass_stats['Cmp']), 2) 
+    pass_stats['TD_to_TO_Ratio'] = round(((pass_stats['Pass_TD'] + \
+                                        pass_stats['Rush_TD']) / \
+                                   (pass_stats['Int'] + \
+                                      pass_stats['Fmb'])), 4)
+    pass_stats['Tot_Yds_Gm'] = round(((pass_stats['Pass_Yds'] + \
+                                       pass_stats['Rush_Yds']) / \
+                                      pass_stats['G']), 4) 
+    
+    pass_stats = pass_stats.fillna(value = 0)
     
     return pass_stats
 
@@ -90,16 +104,23 @@ df_passing['Yds_Att'] = round((df_passing['Pass_Yds'] \
 df_passing['Yds_Cmp'] = round((df_passing['Pass_Yds'] \
                                 / df_passing['Cmp']), 2 )
 df_passing['Int_Pct'] = round((df_passing['Int'] \
-                               / df_passing['Pass_Att']), 4)
+                               / df_passing['Pass_Att'] * 100), 4)
 df_passing['Pass_TD_Pct'] = round((df_passing['Pass_TD'] \
-                                   / df_passing['Pass_Att']), 4)
+                                   / df_passing['Pass_Att'] * 100), 4)
 df_passing['Pass_Yds_Att'] = round((df_passing['Pass_Yds'] \
                                    / df_passing['Pass_Att']), 2)
 df_passing['Pass_Yds_Cmp'] = round((df_passing['Pass_Yds'] \
                                     / df_passing['Cmp']), 2) 
+df_passing['TD_to_TO_Ratio'] = round(((df_passing['Pass_TD'] + \
+                                        df_passing['Rush_TD']) / \
+                                       (df_passing['Int'] + \
+                                        df_passing['Fmb'])), 4)
+df_passing['Tot_Yds_Gm'] = round(((df_passing['Pass_Yds'] + \
+                                       df_passing['Rush_Yds']) / \
+                                      df_passing['G']), 4)
     
 #filter out Qbs that havent played a full season worth of games
-df_passing = df_passing[df_passing.GS >= 16]
+df_passing = df_passing[df_passing.GS >= 15]
 
         
 #export files to csv
