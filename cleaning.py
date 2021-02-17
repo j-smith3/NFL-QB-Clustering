@@ -44,7 +44,7 @@ def fix_names(df):
     df = df.reset_index()
     
     #irregular symbols to remove from name
-    bad_chars = '*+'
+    bad_chars = '*+ '
     
     #strip the junk symbols off of the Player names
     df.iloc[:, 0] = df.iloc[:, 0].apply(lambda x: x.strip(bad_chars))
