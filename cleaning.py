@@ -22,7 +22,7 @@ def cleanup (df, names):
     #if row contains a qb name
     df = df[(df.index.isin(names))] 
     
-    #fill nulls wiht 0
+    #fill nulls with 0
     df = df.fillna(value = 0)
     
     return df
@@ -40,15 +40,18 @@ def get_qbs(df):
 #cleans the Player naming by removing symbols
 def fix_names(df):
     
-    #reset the index to modify Player name column
-    df = df.reset_index()
-    
     #irregular symbols to remove from name
     bad_chars = '*+ '
     
+    #strip the junk symbols off of the columns names
+    df.columns = df.columns.str.strip(bad_chars) 
+    
+    #reset the index to modify Player name column
+    df = df.reset_index() 
+    
     #strip the junk symbols off of the Player names
-    df.iloc[:, 0] = df.iloc[:, 0].apply(lambda x: x.strip(bad_chars))
-           
+    df.iloc[:, 0] = df.iloc[:, 0].apply(lambda x: x.strip(bad_chars))    
+    
     #re establish the index
     df = df.set_index('Player')
     
@@ -67,7 +70,7 @@ def combine_df(df, df2):
 
 #renames rushing columns
 def rename_rushing(df):
-    df = df.rename(columns = {'Att': ' Rush_Att',
+    df = df.rename(columns = {'Att': 'Rush_Att',
                              'Yds': 'Rush_Yds',
                              'TD':'Rush_TD',
                              '1D': 'Rush_1D'})
