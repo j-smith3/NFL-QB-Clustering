@@ -5,7 +5,7 @@ Created on Thu Feb  4 15:58:19 2021
 @author: Justin Smith
 
 This file scrapes Pro-Football Reference for passing stats from the years 
-2016-2020. This data is then exported to 5 csv files
+2011-2020. This data is then exported to 5 csv files
 """
 # Import scraping modules
 from urllib.request import urlopen
@@ -18,7 +18,7 @@ import pandas as pd
 import time
 
 # years to collect stats from
-years = [2016, 2017, 2018, 2019, 2020]
+years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
 
 #iterate through years and save file for each years QB stats
 for year in years:    
