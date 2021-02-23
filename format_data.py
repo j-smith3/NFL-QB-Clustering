@@ -21,7 +21,7 @@ os.getcwd()
 os.chdir(r'C:\Users\jds05\Desktop\qb_project')
 
 #this function cleans up the data and adds some calculated fields
-def reformat_data(year, df):    
+def reformat_data(year, df = 'np.nan'):    
     
     #if year > 0, load in file and clean columns
     if year > 0:
@@ -89,18 +89,28 @@ def reformat_data(year, df):
     
     return pass_stats
 
-#call function to reformat data    
-pass_stats_2016 = reformat_data(2016, False)
-pass_stats_2017 = reformat_data(2017, False)
-pass_stats_2018 = reformat_data(2018, False)
-pass_stats_2019 = reformat_data(2019, False)
-pass_stats_2020 = reformat_data(2020, False)
+#call function to reformat data   
+pass_stats_2011 = reformat_data(2011)
+pass_stats_2012 = reformat_data(2012)
+pass_stats_2013 = reformat_data(2013)
+pass_stats_2014 = reformat_data(2014)
+pass_stats_2015 = reformat_data(2015) 
+pass_stats_2016 = reformat_data(2016)
+pass_stats_2017 = reformat_data(2017)
+pass_stats_2018 = reformat_data(2018)
+pass_stats_2019 = reformat_data(2019)
+pass_stats_2020 = reformat_data(2020)
 
 #call function to add dataframes together into one that combines 
 # 5 years of passing data
 #skip Pos column since its not numeric
-df_passing = combine_df(pass_stats_2016.iloc[:, 1:], \
-                        pass_stats_2017.iloc[:, 1:])
+df_passing = combine_df(pass_stats_2011.iloc[:, 1:], \
+                        pass_stats_2012.iloc[:, 1:])
+df_passing = combine_df(df_passing, pass_stats_2013.iloc[:, 1:])
+df_passing = combine_df(df_passing, pass_stats_2014.iloc[:, 1:])
+df_passing = combine_df(df_passing, pass_stats_2015.iloc[:, 1:])
+df_passing = combine_df(df_passing, pass_stats_2016.iloc[:, 1:])
+df_passing = combine_df(df_passing, pass_stats_2017.iloc[:, 1:])
 df_passing = combine_df(df_passing, pass_stats_2018.iloc[:, 1:])
 df_passing = combine_df(df_passing, pass_stats_2019.iloc[:, 1:])
 df_passing = combine_df(df_passing, pass_stats_2020.iloc[:, 1:])
@@ -116,9 +126,14 @@ df_passing = df_passing[df_passing.GS >= 15]
 
         
 #export files to csv
-pass_stats_2016.to_csv(r'C:\Users\jds05\Desktop\qb_project\2016_total_stats.csv')
-pass_stats_2017.to_csv(r'C:\Users\jds05\Desktop\qb_project\2017_total_stats.csv')
-pass_stats_2018.to_csv(r'C:\Users\jds05\Desktop\qb_project\2018_total_stats.csv')
-pass_stats_2019.to_csv(r'C:\Users\jds05\Desktop\qb_project\2019_total_stats.csv')
-pass_stats_2020.to_csv(r'C:\Users\jds05\Desktop\qb_project\2020_total_stats.csv')
-df_passing.to_csv(r'C:\Users\jds05\Desktop\qb_project\total_stats_5_years.csv')
+#pass_stats_2011.to_csv('./2011_total_stats.csv')
+#pass_stats_2012.to_csv('./2012_total_stats.csv')
+#pass_stats_2013.to_csv('./2013_total_stats.csv')
+#pass_stats_2014.to_csv('./2014_total_stats.csv')
+#pass_stats_2015.to_csv('./2015_total_stats.csv')
+#pass_stats_2016.to_csv('./2016_total_stats.csv')
+#pass_stats_2017.to_csv('./2017_total_stats.csv')
+#pass_stats_2018.to_csv('./2018_total_stats.csv')
+pass_stats_2019.to_csv('./2019_total_stats.csv')
+pass_stats_2020.to_csv('./2020_total_stats.csv')
+df_passing.to_csv('./total_stats_10_years.csv')
