@@ -4,9 +4,9 @@ Created on Mon Feb  1 16:16:20 2021
 
 @author: Justin Smith
 
-This file imports 5 csv files containing yearly football data. It then 
-refines it into QB passing/rushing datframes from years 2016-2020 and includes
-a summarized dataframe for the 5 combined years of data. These 6 dataframes 
+This file imports 10 csv files containing yearly football data. It then 
+refines it into QB passing/rushing datframes from years 2011-2020 and includes
+a summarized dataframe for the 10 combined years of data. These 11 dataframes 
 are then exported back to CSV files in their final data format.
 """
 
