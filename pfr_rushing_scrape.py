@@ -5,7 +5,7 @@ Created on Sun Jan 31   1 18:15:20 2021
 @author: Justin Smith
 
 This file scrapes Pro-Football Reference for rushing stats from the years 
-2016-2020. This data is then exported to 5 csv files
+2011-2020. This data is then exported to 5 csv files
 """
 # Import scraping modules
 from urllib.request import urlopen
